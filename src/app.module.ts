@@ -24,10 +24,8 @@ import { BlogCommentModule } from './blogComments/blogComments.module';
 import { AnalyticsModule } from './analytics/analytics.module';
 import { Analytics } from './analytics/entities/analytics.entity';
 import { ScheduleModule } from '@nestjs/schedule';
-import { VipManagementModule } from './vip-management/vip-management.module';
 import { ChatModule } from './chat/chat.module';
 import { StripeModule } from './stripe/stripe.module';
-import { RequestModule } from './request/request.module';
 
 @Module({
   imports: [
@@ -53,10 +51,8 @@ import { RequestModule } from './request/request.module';
     PostsModule,
     BlogCommentModule,
     AnalyticsModule,
-    VipManagementModule,
     ChatModule,
     StripeModule,
-    RequestModule,
   ],
   controllers: [AppController],
   providers: [AppService],

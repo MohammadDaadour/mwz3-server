@@ -171,8 +171,9 @@ export class AuthService {
         }
         return await this.getCookieLogin(user.id, user.type, true);
       }
-    } catch {
-      throw new BadRequestException();
+    } catch (error) {
+      console.error('Facebook login error:', error);
+      throw new BadRequestException(error.message || 'Facebook login failed');
     }
   }
 
@@ -201,8 +202,9 @@ export class AuthService {
         }
         return await this.getCookieLogin(user.id, user.type, true);
       }
-    } catch {
-      throw new BadRequestException();
+    } catch (error) {
+      console.error('Google login error:', error);
+      throw new BadRequestException(error.message || 'Google login failed');
     }
   }
 

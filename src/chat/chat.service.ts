@@ -3,7 +3,6 @@ import { InjectModel } from '@nestjs/sequelize';
 import { ChatMessage } from './entities/chat-message.entity';
 import { ChatGateway } from './chat.gateway';
 import { User } from '../users/entities/user.entity';
-import { VipUser } from '../vip-management/entities/vip-user.entity';
 import { Op } from 'sequelize';
 import { forwardRef, Inject } from '@nestjs/common';
 
@@ -37,9 +36,7 @@ export class ChatService {
     const fullMsg = await this.chatModel.findByPk(msg.id, {
       include: [
         { model: User, as: 'senderUser', attributes: ['id', 'name'] },
-        { model: VipUser, as: 'senderVipUser', attributes: ['id', 'name'] },
         { model: User, as: 'receiverUser', attributes: ['id', 'name'] },
-        { model: VipUser, as: 'receiverVipUser', attributes: ['id', 'name'] },
       ],
     });
 
@@ -75,9 +72,7 @@ export class ChatService {
       where,
       include: [
         { model: User, as: 'senderUser', attributes: ['id', 'name'] },
-        { model: VipUser, as: 'senderVipUser', attributes: ['id', 'name'] },
         { model: User, as: 'receiverUser', attributes: ['id', 'name'] },
-        { model: VipUser, as: 'receiverVipUser', attributes: ['id', 'name'] },
       ],
       order: [['sentAt', 'ASC']],
       limit: 100,
