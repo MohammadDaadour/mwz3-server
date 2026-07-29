@@ -20,5 +20,5 @@
     "esModuleInterop": true
   },
   "exclude": ["uploads"],
-  "include": ["src/**/*"]
+  "include": ["src/**/*", "google-test.ts"]
 }

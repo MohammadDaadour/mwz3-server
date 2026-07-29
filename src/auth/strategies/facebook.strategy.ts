@@ -15,28 +15,33 @@ export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
       callbackURL: 'https://example.com/placeholder',
       scope: 'email',
       profileFields: ['emails', 'name'],
+      passReqToCallback: true,
     });
   }
 
   async validate(
+    req: any,
     accessToken: string,
     refreshToken: string,
     profile: Profile,
     done: (err: any, user: any, info?: any) => void,
   ): Promise<any> {
-    // const { name, emails } = profile;
+    const { name, emails } = profile;
 
-    // const user = {
-    //   email: emails[0].value,
-    //   name: `${name.givenName} ${name.familyName}`,
-    // };
+    // Decode area from the state parameter round-tripped by Facebook
+    const area = req.query?.state ?? null;
 
-    // const payload = {
-    //   user,
-    //   accessToken,
-    // };
+    const user = {
+      email: emails[0].value,
+      name: `${name.givenName} ${name.familyName}`,
+    };
 
-    // done(null, payload);
-    return null;
+    const payload = {
+      user,
+      accessToken,
+      area,
+    };
+
+    done(null, payload);
   }
 }
