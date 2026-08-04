@@ -7,7 +7,7 @@ import { Sequelize } from 'sequelize-typescript';
 import { Op, where, col, cast } from 'sequelize';
 import sequelize from 'sequelize';
 import { Area } from 'src/areas/entities/area.entity';
-import { removeUndefinedFields } from '../../utils/removeUndefined';
+import { removeUndefinedFields } from '../utils/removeUndefined'; 
 
 @Injectable()
 export class UsersService {
