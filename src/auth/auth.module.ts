@@ -12,6 +12,7 @@ import { JwtGuard } from './guards/jwt.guard';
 import { EmailModule } from 'src/email/email.module';
 import { FacebookStrategy } from './strategies/facebook.strategy';
 import { GoogleStrategy } from './strategies/google.strategy';
+import { AreasModule } from 'src/areas/areas.module';
 
 @Module({
   controllers: [AuthController],
@@ -26,6 +27,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
   imports: [
     UsersModule,
     EmailModule,
+    AreasModule,
     PassportModule.register({ property: 'user' }),
     ConfigModule,
     JwtModule.registerAsync({

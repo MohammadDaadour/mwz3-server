@@ -119,13 +119,14 @@ export class AuthController {
   @UseGuards(GoogleGuard)
   @HttpCode(HttpStatus.OK)
   @Get('/google/redirect')
-  async googleLoginRedirect(
-    @Req() req: Request,
-    @Res() res: Response,
-    @Query('code') code?: string,
-  ) {
-    const cookie = await this.service.googleLogin(req.user);
-    return res.json(cookie);
+  async googleLoginRedirect(@Req() req: Request, @Res() res: Response) {
+    try {
+      const cookie = await this.service.googleLogin(req.user);
+      return res.json(cookie);
+    } catch (error) {
+      console.error('Google login redirect failed:', { name: error.name, message: error.message });
+      return res.status(error.status || 400).json({ error: error.message || 'Google login failed' });
+    }
   }
 
   @Public()

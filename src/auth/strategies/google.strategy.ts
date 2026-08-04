@@ -11,16 +11,22 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       clientSecret: configService.get('GOOGLE_TOKEN'),
       callbackURL: `https://mwz3.com/redirect/google`,
       scope: ['profile', 'email'],
+      passReqToCallback: true,
+      state: true,
     });
   }
 
   async validate(
+    req: any,
     accessToken: string,
     refreshToken: string,
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
     const { name, emails } = profile;
+
+    // Decode area from the state parameter round-tripped by Google
+    const area = req.query?.state ?? null;
 
     const user = {
       email: emails[0].value,
@@ -30,6 +36,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     const payload = {
       user,
       accessToken,
+      area,
     };
 
     done(null, payload);

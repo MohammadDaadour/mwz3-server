@@ -10,6 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { TokenPayload } from './interfaces/tokenPayload.interface';
 import { EmailService } from 'src/email/email.service';
+import { AreasService } from 'src/areas/areas.service';
 
 @Injectable()
 export class AuthService {
@@ -18,6 +19,7 @@ export class AuthService {
     private jwtService: JwtService,
     private configService: ConfigService,
     private emailService: EmailService,
+    private areasService: AreasService,
   ) { }
 
   async generateHash(str: string) {
@@ -152,6 +154,16 @@ export class AuthService {
     });
     try {
       if (!user) {
+        // New signup — area is required
+        if (!payload.area) {
+          throw new BadRequestException('Area is required to complete signup');
+        }
+
+        const areaRecord = await this.areasService.findById(+payload.area);
+        if (!areaRecord) {
+          throw new BadRequestException('Invalid area ID');
+        }
+
         const hashed = await bcrypt.hash(payload.accessToken.slice(0, 10), 10);
         const newUser = await this.usersService.create({
           email: payload.user.email,
@@ -160,9 +172,11 @@ export class AuthService {
           label: payload.user.name,
           activatedAt: new Date(),
           facebook: true,
+          areaFK: +payload.area,
         });
         return await this.getCookieLogin(newUser.id, newUser.type, true);
       } else {
+        // Existing user — update flags only, never touch areaFK
         if (!user.facebook) {
           await this.usersService.update(user.id, { facebook: true });
         }
@@ -171,8 +185,18 @@ export class AuthService {
         }
         return await this.getCookieLogin(user.id, user.type, true);
       }
-    } catch {
-      throw new BadRequestException();
+    } catch (error) {
+      console.error('FACEBOOK LOGIN FAILED:', {
+        name: error.name,
+        message: error.message,
+        errors: error.errors,
+        original: error.original,
+        stack: error.stack,
+      });
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(error.message || 'Facebook login failed');
     }
   }
 
@@ -182,6 +206,16 @@ export class AuthService {
     });
     try {
       if (!user) {
+        // New signup — area is required
+        if (!payload.area) {
+          throw new BadRequestException('Area is required to complete signup');
+        }
+
+        const areaRecord = await this.areasService.findById(+payload.area);
+        if (!areaRecord) {
+          throw new BadRequestException('Invalid area ID');
+        }
+
         const hashed = await bcrypt.hash(payload.accessToken.slice(0, 10), 10);
         const newUser = await this.usersService.create({
           email: payload.user.email,
@@ -190,9 +224,11 @@ export class AuthService {
           label: payload.user.name,
           activatedAt: new Date(),
           google: true,
+          areaFK: +payload.area,
         });
         return await this.getCookieLogin(newUser.id, newUser.type, true);
       } else {
+        // Existing user — update flags only, never touch areaFK
         if (!user.google) {
           await this.usersService.update(user.id, { google: true });
         }
@@ -201,8 +237,18 @@ export class AuthService {
         }
         return await this.getCookieLogin(user.id, user.type, true);
       }
-    } catch {
-      throw new BadRequestException();
+    } catch (error) {
+      console.error('GOOGLE LOGIN FAILED:', {
+        name: error.name,
+        message: error.message,
+        errors: error.errors,
+        original: error.original,
+        stack: error.stack,
+      });
+      if (error instanceof BadRequestException) {
+        throw error;
+      }
+      throw new BadRequestException(error.message || 'Google login failed');
     }
   }
 
