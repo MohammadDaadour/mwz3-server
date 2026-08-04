@@ -12,7 +12,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       callbackURL: `https://mwz3.com/redirect/google`,
       scope: ['profile', 'email'],
       passReqToCallback: true,
-      state: true,
+      // state: true,
     });
   }
 
