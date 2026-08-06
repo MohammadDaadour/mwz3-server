@@ -7,12 +7,12 @@ import { ConfigService } from '@nestjs/config';
 export class FacebookStrategy extends PassportStrategy(Strategy, 'facebook') {
   constructor(readonly configService: ConfigService) {
     super({
-      // clientID: configService.get('FB_ID'),
-      // clientSecret: configService.get('FB_TOKEN'),
-      // callbackURL: 'https://mwz3.com/redirect/facebook',
-      clientID: 'placeholder',
-      clientSecret: 'placeholder',
-      callbackURL: 'https://example.com/placeholder',
+      clientID: configService.get('FB_ID'),
+      clientSecret: configService.get('FB_TOKEN'),
+      callbackURL: 'https://mwz3.com/redirect/facebook',
+      // clientID: 'placeholder',
+      // clientSecret: 'placeholder',
+      // callbackURL: 'https://example.com/placeholder',
       scope: 'email',
       profileFields: ['emails', 'name'],
       passReqToCallback: true,
